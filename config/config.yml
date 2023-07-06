@@ -1,0 +1,29 @@
+model:
+  model_name: TF
+  input_dim: 94
+  sequence_length: 100
+  num_people: 2
+  model_dim: 100
+  head_dim: 128
+  output_dim: 13
+  depth_t: 2
+  depth_n: 2
+
+training:
+  learning_rate_start: 0.0005
+  learning_rate_min: 0.00001
+  batch_size: 128
+  epochs: 1600
+  warm_up: 400
+
+dataset:
+  run: train-val
+  name: OL
+  match: 2
+  num_workers: 4
+
+
+hyperparameters:
+  dropout: 0.3
+  optimizer: Adam
+  criterion: CE
