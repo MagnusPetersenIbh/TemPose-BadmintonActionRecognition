@@ -1,6 +1,6 @@
 import numpy as np
 import torch 
-from utility_tempose import get_2d_sincos_pos_embed
+from ...utility_tempose import get_2d_sincos_pos_embed
 from NN_models import PreNorm,FeedForward,Attention,Transformer
 from torch import nn, einsum
 import torch.nn.functional as F
@@ -82,7 +82,7 @@ class TemPoseII_TF(nn.Module):
 
     def _init_weights(self, m):
         if isinstance(m, nn.Linear):
-            # we use xavier_uniform following official JAX ViT:
+            #following official JAX ViT xavier.uniform is used:
             torch.nn.init.xavier_uniform_(m.weight)
             if isinstance(m, nn.Linear) and m.bias is not None:
                 nn.init.constant_(m.bias, 0)
@@ -124,7 +124,7 @@ class TemPoseII_TF(nn.Module):
         
         x += self.interaction_embedding[:, :(n+1)]
         
-        x = self.interaction_transformer(x)#¤,mask)
+        x = self.interaction_transformer(x)
 
 
         x = x.mean(dim = 1) if self.pool == 'mean' else x[:, 0]
