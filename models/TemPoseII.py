@@ -15,8 +15,6 @@ class TemPoseII_TF(nn.Module):
         self.dataset = dataset
         self.people = num_people + 3
 
-        assert pool in {'cls', 'mean'}, 'pool type must be either cls (cls token) or mean (mean pooling)'
-
         self.to_patch_embedding = nn.Linear(poses_numbers, dim)
 
         self.temporal_embedding = nn.Parameter(torch.zeros(1, self.people, time_steps + 1, dim),requires_grad=True)
