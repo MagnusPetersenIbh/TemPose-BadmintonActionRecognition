@@ -12,7 +12,6 @@ class TemPoseII_TF(nn.Module):
 
         self.heads = heads
         self.time_sequence = time_steps
-        self.dataset = dataset
         self.people = num_people + 3
         self.to_patch_embedding = nn.Linear(poses_numbers, dim)
 
@@ -28,8 +27,7 @@ class TemPoseII_TF(nn.Module):
 
         self.dropout = nn.Dropout(emb_dropout)
         self.pool = pool
-        self.dataset = dataset
-        
+       
         self.mlp_head = nn.Sequential(
             nn.LayerNorm(dim),
             nn.Linear(dim, scale_dim*dim),
