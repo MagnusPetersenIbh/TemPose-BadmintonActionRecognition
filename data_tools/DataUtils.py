@@ -146,14 +146,10 @@ def create_limbs_robust(keypoints, pairs):
             end_point = pose[end]
             if start_point[0] <= 0.01 or start_point[1] <= 0.01 or end_point[0] <= 0.01 or end_point[1] <= 0.01:
                 limb = torch.zeros((num_steps-2, 2))
-                #limb[0,:] = start_point[:2]
-                #limb[-1,:]= end_point[:2]
             else:
                 x_linspace = torch.linspace(start_point[0], end_point[0], steps=num_steps)[1:-1]
                 y_linspace = torch.linspace(start_point[1], end_point[1], steps=num_steps)[1:-1]
-                #z_linspace = torch.linspace(start_point[2], end_point[2], steps=num_steps)
                 limb = torch.stack([x_linspace, y_linspace], dim=1)
-                #limb = torch.linspace(start_point, end_point, steps=5) # single point
             pose_limbs.append(limb)
         limbs.append(torch.cat([useful_points,rearrange(torch.stack(pose_limbs),'n p d -> (n p) d')],dim=0))
     return torch.stack(limbs)
@@ -170,9 +166,7 @@ def create_bones_robust(keypoints, pairs):
             else:
                 x_bone = end_point[0]-start_point[0]
                 y_bone = end_point[1]-start_point[1]
-                #z_linspace = torch.linspace(start_point[2], end_point[2], steps=num_steps)
                 limb = torch.tensor([x_bone, y_bone])
-                #limb = torch.linspace(start_point, end_point, steps=5) # single point
             pose_limbs.append(limb)
         limbs.append(torch.stack(pose_limbs))
     return torch.stack(limbs)

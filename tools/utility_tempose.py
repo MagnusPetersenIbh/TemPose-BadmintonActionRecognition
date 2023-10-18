@@ -1,17 +1,17 @@
 import math
 import torch
 
-def adjust_lr(optimizer,lr_max,lr_min,epoch,num_epochs,warmup_epochs):
-    if epoch < warmup_epochs:
-        lr = lr_max * epoch / warmup_epochs
-    else:
-        lr = lr_min + 0.5 * (lr_max-lr_min) * (1.0 + math.cos(math.pi * (epoch - warmup_epochs) / (num_epochs - warmup_epochs))) 
+def adjust_lr(optimizer,LR_max,LR_min,e,num_epochs,warm_e,period=1):
+    "adjusted learning cosine learning rate with linear warm-up"
+    if e < warm_e: #linear warmup
+        lr = LR_max * e / warm_e
+    else: #cosine anearling 
+        lr = LR_min + 0.5 * (LR_max-LR_min) * (1.0 + math.cos(period*math.pi * (e - warm_e) / (num_epochs - warm_e))) 
     for param_group in optimizer.param_groups:
-        if "lr_scale" in param_group:
+        if "lr_scale" in param_group: # account for learning rate scale in optimizer
             param_group["lr"] = lr * param_group["lr_scale"]
         else:
             param_group["lr"] = lr
-    
     
 def euclid_dist(p1,p2):
     x1,y1 = p1
@@ -31,9 +31,7 @@ def create_motion_robust(keypoints, pairs):
             else:
                 x_linspace = torch.linspace(start_point[0], end_point[0], steps=num_steps)
                 y_linspace = torch.linspace(start_point[1], end_point[1], steps=num_steps)
-                #z_linspace = torch.linspace(start_point[2], end_point[2], steps=num_steps)
                 limb = torch.stack([x_linspace, y_linspace], dim=1)
-                #limb = torch.linspace(start_point, end_point, steps=5) # single point
             pose_limbs.append(limb)
         limbs.append(torch.stack(pose_limbs))
     return torch.stack(limbs)
