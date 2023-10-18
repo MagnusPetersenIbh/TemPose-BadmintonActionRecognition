@@ -1,58 +1,43 @@
 import torch
-import math
-from sklearn.model_selection import train_test_split
 import numpy as np
-import torchvision
-from torchvision import transforms
-import matplotlib.pyplot as plt 
 import os
 from torch.nn.functional import elu
-import glob
-import pandas as pd
-import pickle
-from utility_tempose import get_1d_sincos_pos_embed_from_grid,get_2d_sincos_pos_embed
 import math
 from torch import nn, einsum
 from torch.nn import MultiheadAttention
 #import torch.nn as nn
 import torch.nn.functional as F
 from einops import rearrange, repeat
-from torch.utils.data import Dataset, DataLoader, random_split
 from einops.layers.torch import Rearrange
-#from module import Attention, PreNorm, FeedForward
-
-def pair(t):
-    return t if isinstance(t, tuple) else (t, t)
 
 # classes
-
 class PreNorm(nn.Module):
     def __init__(self, dim, fn):
         super().__init__()
         self.norm = nn.LayerNorm(dim)
         self.fn = fn
-    def forward(self, x,mask = None,y=None, **kwargs):
-        return self.fn(self.norm(x),mask, **kwargs)
+    def forward(self, x,mask = None,y=None):
+        return self.fn(self.norm(x),mask)
 class PreNormCross(nn.Module):
     def __init__(self, dim, fn):
         super().__init__()
         self.norm = nn.LayerNorm(dim)
         self.fn = fn
-    def forward(self, x,mask = None,y=None, **kwargs):
+    def forward(self, x,mask = None,y=None):
         if y is not None:
-            return self.fn(self.norm(x),self.norm(y),mask, **kwargs)
+            return self.fn(self.norm(x),self.norm(y),mask)
         else:
-            return self.fn(self.norm(x),mask, **kwargs)
+            return self.fn(self.norm(x),mask)
 class PreNormMulti(nn.Module):
     def __init__(self, dim, fn):
         super().__init__()
         self.norm = nn.LayerNorm(dim)
         self.fn = fn
-    def forward(self, x,mask = None,need_weights=False,y=None, **kwargs):
+    def forward(self, x,mask = None,need_weights=False,y=None):
         if y is not None:
-            return self.fn(self.norm(x),self.norm(x),self.norm(y),mask,need_weights=need_weights, **kwargs)
+            return self.fn(self.norm(x),self.norm(x),self.norm(y),mask,need_weights=need_weights)
         else:
-            return self.fn(self.norm(x),self.norm(x),self.norm(x),mask,need_weights=need_weights, **kwargs)
+            return self.fn(self.norm(x),self.norm(x),self.norm(x),mask,need_weights=need_weights)
 
 class FeedForward(nn.Module):
     def __init__(self, dim, hidden_dim, dropout = 0.):
@@ -126,7 +111,7 @@ class Attention(nn.Module):
 
         dots = torch.matmul(q, k.transpose(-1, -2)) * self.scale
         if mask is not None:
-            dots = dots.masked_fill(mask == 0, -1e9) # applied on res_x_mask to mask padding
+            dots = dots.masked_fill(mask == 0, -1e9) 
 
         attn = self.attend(dots)        
         attn = self.dropout(attn)
@@ -135,7 +120,7 @@ class Attention(nn.Module):
         out = rearrange(out, 'b h n d -> b n (h d)')
         return self.to_out(out)
     
-class CrossAttention(nn.Module):  ### x is q, y is k,v, thus output get y shape
+class CrossAttention(nn.Module):  
     def __init__(self, dim, heads=8, dim_head=48, dropout=0.):
         super().__init__()
         inner_dim = dim_head * heads
@@ -163,7 +148,7 @@ class CrossAttention(nn.Module):  ### x is q, y is k,v, thus output get y shape
 
         dots = torch.matmul(q, k.transpose(-1, -2)) * self.scale
         if mask is not None:
-            dots = dots.masked_fill(mask == 0, -1e9) # applied on res_x_mask to mask padding
+            dots = dots.masked_fill(mask == 0, -1e9) 
 
         attn = self.attend(dots)
         attn = self.dropout(attn)
