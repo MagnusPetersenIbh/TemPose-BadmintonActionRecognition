@@ -7,14 +7,13 @@ import torch.nn.functional as F
 from einops import rearrange, repeat
 
 class TemPoseII_TF(nn.Module):
-    def __init__(self, *, poses_numbers, time_steps,num_people, num_classes, dim=50,kernel_size=5, depth=4,depth_int=3, heads=6,scale_dim=4, mlp_dim=512, pool = 'cls', dim_head = 75, dropout = 0.3, emb_dropout = 0.3, dataset= 'OL'):
+    def __init__(self, *, poses_numbers, time_steps,num_people, num_classes, dim=50,kernel_size=5, depth=4,depth_int=3, heads=6,scale_dim=4, mlp_dim=512, pool = 'cls', dim_head = 75, dropout = 0.3, emb_dropout = 0.3):
         super().__init__()
 
         self.heads = heads
         self.time_sequence = time_steps
         self.dataset = dataset
         self.people = num_people + 3
-
         self.to_patch_embedding = nn.Linear(poses_numbers, dim)
 
         self.temporal_embedding = nn.Parameter(torch.zeros(1, self.people, time_steps + 1, dim),requires_grad=True)
