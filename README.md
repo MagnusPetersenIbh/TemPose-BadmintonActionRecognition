@@ -15,4 +15,3 @@ If you find the paper or repository helpful or interesting, please cite our work
   keywords={Visualization;Dynamics;Computer architecture;Transformers;Skeleton;Data models;Pattern recognition},
   doi={10.1109/CVPRW59228.2023.00548}}
 ```
-If you find the paper or repository helpful or interesting, please cite our work as:
