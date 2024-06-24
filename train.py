@@ -5,7 +5,7 @@ from utility_tempose import adjust_lr
 
 #import wandb
 
-def train_val(model,loader,run,device,cfg):
+def train(model,loader,run,device,cfg):
     training_config = cfg['training']
     if cfg == None:
         print('Invalid training config')
