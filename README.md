@@ -144,7 +144,7 @@ Across all strokes:
 
 ## 7) Labels
 
-Each stroke label is a **2-element entry** — the stroke type and the match name:
+Each stroke label is a **2-element entry**, the stroke type and the match name:
 
 ```python
 labels[i] = [stroke_type, match_name]    # final shape: [#strokes, 2]
