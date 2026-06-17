@@ -48,7 +48,7 @@ labels = pd.read_pickle('Data/2d_labels.pkl')
 
 | Purpose            | Tool                                                                                 |
 |--------------------|--------------------------------------------------------------------------------------|
-| Pose estimation    | [MMPose](https://github.com/open-mmlab/mmpose/tree/main) — **HRNet**                  |
+| Pose estimation    | [MMPose](https://github.com/open-mmlab/mmpose/tree/main) **HRNet**                  |
 | Shuttle tracking   | [WASB-SBDT](https://github.com/nttcom/WASB-SBDT) (TrackNetV2 originally; WASB similar)|
 
 ---
